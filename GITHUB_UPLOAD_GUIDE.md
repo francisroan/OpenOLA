@@ -1,7 +1,20 @@
 
-# Getting and building the OpenOLA source
+# Getting and building OpenOLA
 
-This public repository is open to forks and pull requests. The full GUI and Android source trees are provided as ZIP archives in `source/`; this keeps their directory structure intact for download.
+This public repository is open to forks and pull requests. A normal `git clone` downloads the prebuilt Android APK and all source archives, including the Windows GUI source.
+
+## Download with Git
+
+1. Install Git for Windows if it is not already installed.
+2. Open PowerShell or Command Prompt and run:
+
+   ```powershell
+   git clone https://github.com/francisroan/OpenOLA.git
+   ```
+
+3. In the cloned `OpenOLA` folder, the APK is at `source/apk/OpenOLA-0.4.0-preview-arm64-v8a.apk`.
+4. The ready-to-launch Windows GUI project is in `source/openola-windows-desktop-source.zip`. Extract it, open `windows-desktop/`, and double-click `SETUP_AND_LAUNCH.cmd` for first-time setup. After setup, use `30_scooter_gui.cmd` to launch it again.
+5. See `source/apk/README.md` for APK integrity/install details and `SOURCE_BUILD_MANIFEST.md` for build prerequisites and source contents.
 
 ## Download source from GitHub
 
@@ -20,4 +33,4 @@ This public repository is open to forks and pull requests. The full GUI and Andr
 
 GitHub browser uploads are intended for files, not folders. To publish source updates, create a ZIP with the original project directory structure and upload that archive under `source/`, then update the manifest and archive link. Confirm the archive contents and remove secrets before committing.
 
-The repository is source-only: it does not include compiled APKs, personal captures, local build caches, or private signing material. See [LICENSE_STATUS.md](LICENSE_STATUS.md) before reusing or redistributing code.
+Do not commit personal captures, local build caches, or private signing material. See [LICENSE_STATUS.md](LICENSE_STATUS.md) before reusing or redistributing code.

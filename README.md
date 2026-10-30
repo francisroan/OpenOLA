@@ -45,7 +45,7 @@ The source archives preserve their project folder structure. They exclude privat
 
 ## Prebuilt Android preview
 
-Download [OpenOLA 0.4.0 preview for arm64-v8a](https://github.com/francisroan/OpenOLA/releases/latest/download/OpenOLA-0.4.0-preview-arm64-v8a.apk). It is intended for Android 8.0+ devices using a 64-bit ARM processor. It is debug-signed for preview installation, not a store release. Secure vehicle Wi-Fi diagnostics require a separately authorized identity configured locally. See [the artifact record](source/apk/README.md) for SHA-256, signing details, build provenance, and install steps.
+The APK is included at [source/apk/OpenOLA-0.4.0-preview-arm64-v8a.apk](source/apk/OpenOLA-0.4.0-preview-arm64-v8a.apk), so cloning this repository downloads it together with the Windows GUI source archive. The Windows GUI archive is at [source/openola-windows-desktop-source.zip](source/openola-windows-desktop-source.zip); extract it and run `SETUP_AND_LAUNCH.cmd` from `windows-desktop/`. The APK is intended for Android 8.0+ devices using a 64-bit ARM processor. It is debug-signed for preview installation, not a store release. Secure vehicle Wi-Fi diagnostics require a separately authorized identity configured locally. See [the artifact record](source/apk/README.md) for SHA-256, signing details, build provenance, and install steps.
 
 See [VALIDATION_PLAN.md](VALIDATION_PLAN.md) for documentation mismatches, open bugs, and checks required before distributing an APK or desktop package. Review [LICENSE_STATUS.md](LICENSE_STATUS.md) before inviting reuse.
 

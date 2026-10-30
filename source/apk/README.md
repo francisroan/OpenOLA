@@ -1,6 +1,6 @@
 # Android preview APK
 
-`OpenOLA-0.4.0-preview-arm64-v8a.apk` is distributed as an asset on the repository's GitHub Release page. It is a debug-signed preview for arm64-v8a devices running Android 8.0 (API 26) or later.
+`OpenOLA-0.4.0-preview-arm64-v8a.apk` is committed in this folder. `git clone` downloads the APK and the Windows GUI source archive together. It is a debug-signed preview for arm64-v8a devices running Android 8.0 (API 26) or later.
 
 ## Integrity and signing
 
@@ -24,7 +24,7 @@ This is a debug-signed community preview, not a store release. It has not been v
 
 ## Install
 
-1. Download the APK from the repository's Releases page.
+1. After cloning the repository, open `source/apk/` and copy the APK to your Android device, or download the APK file from that folder on GitHub.
 2. On the Android device, allow the browser or file manager to install unknown apps when prompted.
 3. Open the downloaded APK and follow Android's installation prompt.
 

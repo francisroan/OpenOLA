@@ -77,7 +77,7 @@ Build prerequisites: Flutter 3.47.6 and Dart 3.13.5 per the recorded validation,
 
 Android build from the extracted `mobile/` directory: run `flutter pub get`, then `flutter build apk --release`. The output is under `build/app/outputs/flutter-apk/`. iOS requires macOS/Xcode and a development team configured in Xcode.
 
-The repository provides [OpenOLA-0.4.0-preview-arm64-v8a.apk](https://github.com/francisroan/OpenOLA/releases/latest/download/OpenOLA-0.4.0-preview-arm64-v8a.apk) as a debug-signed preview for Android 8.0+ (API 26+), arm64-v8a. It excludes local mTLS identity assets; secure vehicle Wi-Fi diagnostics therefore require an authorized identity configured locally before use. The preview is not a store-ready release and has not been validated on a physical scooter. Verify its SHA-256 and signing certificate against `source/apk/README.md` before installation.
+The APK is committed at `source/apk/OpenOLA-0.4.0-preview-arm64-v8a.apk`, so `git clone` downloads it with the source archives. It is a debug-signed preview for Android 8.0+ (API 26+), arm64-v8a. It excludes local mTLS identity assets; secure vehicle Wi-Fi diagnostics therefore require an authorized identity configured locally before use. The preview is not a store-ready release and has not been validated on a physical scooter. Verify its SHA-256 and signing certificate against `source/apk/README.md` before installation.
 
 The original local artifact is not published because it contained private identity material. The public preview is built from the curated source archive after removing the private asset declaration; record its build provenance and signing fingerprint in `source/apk/README.md`.
 
