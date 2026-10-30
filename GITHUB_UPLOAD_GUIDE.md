@@ -1,32 +1,22 @@
-# Upload this OpenOLA package to GitHub
+# Getting and building the OpenOLA source
 
-This guide is for the public repository [francisroan/OpenOLA](https://github.com/francisroan/OpenOLA). The repository is currently public and its page shows the Fork button, so other users can fork it already. GitHub allows forks of public repositories; you do not need a special fork setting for this public repository.
+This public repository is open to forks and pull requests. The full GUI and Android source trees are provided as ZIP archives in `source/`; this keeps their directory structure intact for download.
 
-## Push the prepared package with GitHub Desktop
+## Download source from GitHub
 
-The prepared repository clone is already at `D:\Ola_claude\OpenOLA_public_upload`. It contains the filtered OpenOLA package and local commit `0395229` (`Add OpenOLA GUI and Android source with repair research`). It has not been pushed yet.
+1. Open the repository Code page.
+2. Open the `source/` folder.
+3. Select the ZIP archive for the project you want: `openola-windows-desktop-source.zip`, `openola-android-kotlin-source.zip`, `openola-flutter-mobile-source.zip`, or `openola-shared-source.zip`.
+4. On the archive page, click **Download** (or use **Code → Download ZIP** to get the entire repository).
+5. Extract the archive. Follow [SOURCE_BUILD_MANIFEST.md](SOURCE_BUILD_MANIFEST.md) for prerequisites and build commands.
 
-1. Install GitHub Desktop from [desktop.github.com](https://desktop.github.com/) and sign in to the GitHub account that owns `francisroan/OpenOLA`.
-2. In GitHub Desktop, choose **File → Add Local Repository**.
-3. Select `D:\Ola_claude\OpenOLA_public_upload` and click **Add repository**. Do not choose `D:\Ola_claude`; that is the original working folder and contains private/local files.
-4. GitHub Desktop should show the `main` branch and the prepared commit. Check that the repository URL/origin is `https://github.com/francisroan/OpenOLA.git`.
-5. Click **Push origin** in the top bar. If it instead shows **Publish repository**, stop and check the origin URL; the prepared folder is already linked to the existing public repository.
-6. Refresh [github.com/francisroan/OpenOLA](https://github.com/francisroan/OpenOLA). The README should render on the front page; open `source/` and check `windows-desktop/`, `android-kotlin/`, and `flutter-mobile/`.
+## Fork and contribute
 
-If GitHub Desktop reports a conflict or asks to overwrite remote changes, stop and ask for help instead of force-pushing. The online repository was a one-file starter when this package was prepared.
+1. Click **Fork** near the top of the repository page and create your own fork.
+2. Make and validate changes in your copy, recording exact model/build details and evidence confidence.
+3. Open a pull request from your fork and describe the change, tests, and validation limits.
+4. Do not include personal vehicle identifiers, credentials, private signing material, raw owner captures, build caches, or vendor keys.
 
-## Browser upload option
+GitHub browser uploads are intended for files, not folders. To publish source updates, create a ZIP with the original project directory structure and upload that archive under `source/`, then update the manifest and archive link. Confirm the archive contents and remove secrets before committing.
 
-GitHub's web uploader accepts files and folders, but limits an upload to 100 files at a time and 25 MiB per file. This source package exceeds one batch, so GitHub Desktop is the easier route. If you choose the browser, upload in batches and preserve the directory structure exactly. See [GitHub's file upload instructions](https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository).
-
-## Confirm that people can fork
-
-The repository is already public and the page currently displays **Fork**. Public repositories are forkable by default. If that changes or the Fork control disappears, check **Settings → General → Features → Allow forking** (when GitHub shows that option for your account/repository). See [GitHub's fork documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks).
-
-## Before pressing Push
-
-- Do not copy personal captures, local APK binaries, private signing material, certificates granting live access, device identifiers, passwords, or local configuration.
-- Keep the repository focused on OpenOLA GUI/APK and repair research.
-- Do not publish raw diagnostics until personal/vehicle identifiers and credentials have been removed.
-- Review `SOURCE_BUILD_MANIFEST.md` and `VALIDATION_PLAN.md` so readers know which files build each target and which checks remain open.
-- Add a license only after confirming rights for all authored code, extracted data, icons, and third-party components. `LICENSE_STATUS.md` records the current status.
+The repository is source-only: it does not include compiled APKs, personal captures, local build caches, or private signing material. See [LICENSE_STATUS.md](LICENSE_STATUS.md) before reusing or redistributing code.
