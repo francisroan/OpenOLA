@@ -17,12 +17,13 @@ The two recent posts describe different surfaces. The diagnostics post reports r
 
 ## Project options
 
-| Project | Source location in this workspace | Build system | Status |
-|---|---|---|---|
-| Windows scooter GUI | `source/windows-desktop/` | Python 3.12, Tk/Tcl, pip dependencies | Desktop GUI and mock/demo code exist. Physical validation varies by feature. |
-| Kotlin Android app | `source/android-kotlin/apk/` | Gradle wrapper, Android SDK, JDK 17 | Separate OpenOLA Kotlin app source. Build this target independently from Flutter. |
-| Flutter OpenOLA | `source/flutter-mobile/mobile/` | Flutter 3.47.6, Dart 3.13.5, Android Gradle/NDK; Xcode for iOS | Active phone source is 0.4.0+9. A local APK artifact exists; source validation and physical-device validation are separate. |
-| Legacy Android app | Not included in the curated source | Gradle, Android SDK, JDK 17 | Historical project; it is not the current phone build. |
+| Project | Source archive | Extracted project directory | Build system | Status |
+|---|---|---|---|---|
+| Windows scooter GUI | [openola-windows-desktop-source.zip](source/openola-windows-desktop-source.zip) | `windows-desktop/` | Python 3.12, Tk/Tcl, pip dependencies | Desktop GUI and mock/demo code exist. Physical validation varies by feature. |
+| Kotlin Android app | [openola-android-kotlin-source.zip](source/openola-android-kotlin-source.zip) | `android-kotlin/apk/` | Gradle wrapper, Android SDK, JDK 17 | Separate OpenOLA Kotlin app source. Build this target independently from Flutter. |
+| Flutter OpenOLA | [openola-flutter-mobile-source.zip](source/openola-flutter-mobile-source.zip) | `mobile/` | Flutter 3.47.6, Dart 3.13.5, Android Gradle/NDK; Xcode for iOS | Active phone source is 0.4.0+9. Source validation and physical-device validation are separate. |
+| Shared repair references | [openola-shared-source.zip](source/openola-shared-source.zip) | `shared/` | Reference data and catalogs | Sanitized shared data for repair research. |
+| Legacy Android app | Not included in the curated source | — | Gradle, Android SDK, JDK 17 | Historical project; it is not the current phone build. |
 
 ## Evidence rule
 
@@ -38,9 +39,9 @@ A source string, UI response, or successful compile is not proof of physical veh
 
 ## Build references
 
-See [SOURCE_BUILD_MANIFEST.md](SOURCE_BUILD_MANIFEST.md) for the files and folders required to reproduce each app, toolchain versions, commands, and files that must not be committed. See [RESEARCH_COMPARISON.md](RESEARCH_COMPARISON.md) for public-source comparison, current discrepancies, and the repair test plan.
+Download the relevant source archive from `source/` and extract it before building. See [SOURCE_BUILD_MANIFEST.md](SOURCE_BUILD_MANIFEST.md) for archive contents, toolchain versions, commands, and files that must not be committed. See [RESEARCH_COMPARISON.md](RESEARCH_COMPARISON.md) for public-source comparison, current discrepancies, and the repair test plan.
 
-The staged source tree is included under source/: windows-desktop/, android-kotlin/, and flutter-mobile/. It is source-only; private credentials, local captures, dependency caches, and prebuilt APKs have been excluded. Recheck the exclusions and toolchain against the exact commit before publishing.
+The source archives preserve their project folder structure. They contain source and build configuration only; private credentials, local captures, dependency caches, and prebuilt APKs have been excluded. Review the archive contents and verify the exclusions before building or contributing.
 
 See [VALIDATION_PLAN.md](VALIDATION_PLAN.md) for documentation mismatches, open bugs, and checks required before distributing an APK or desktop package. Review [LICENSE_STATUS.md](LICENSE_STATUS.md) before inviting reuse.
 
