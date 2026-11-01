@@ -4,7 +4,7 @@
 
 ## Integrity and signing
 
-- SHA-256: `5A03D9AF17DD686CF14DD42AE150AFD6E322684AD8128B2D1E124F66CCD579F9`
+- SHA-256: `F9908166B186B5E8EA9AC09FF2F749A42C605B90DD1758BCE1C3ED166D933608`
 - Signing certificate SHA-256: `F64A17D97F02A7B537AEB60DEE560EAE02DC13103DB5FB4B34E329A2445BB3BA`
 - Application ID: `in.crossfire.s1diag`
 - Version: `0.4.0` (version code `2009` for this ABI)
@@ -12,7 +12,7 @@
 
 This preview was **built from a clean extraction of the curated public Flutter
 source archive**, not derived from a prior binary. Source commit:
-`e3913a6739fdd6f00f0a6fb39b1918c01ade9e78` (1 Nov 2026). Build command:
+`2dade1123903bfde3bd5e1bacff58b559ebf301a` (1 Nov 2026). Build command:
 `flutter build apk --release --split-per-abi --target-platform android-arm64 --no-pub`
 with Flutter 3.47.6 / Dart 3.13.5, Android SDK Platform 37 and NDK 28.2.13676358,
 producing `app-arm64-v8a-release.apk`. Signature verification passed with APK
