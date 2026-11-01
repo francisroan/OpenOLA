@@ -36,7 +36,8 @@ This file records validation of the public Flutter source and lists checks that 
 - `flutter pub get` completed from the clean extraction.
 - `flutter analyze --no-pub` completed with no issues.
 - Focused decoder and protocol tests: 15 passed, 1 skipped. The skipped test requires a personal PKCS#12 identity intentionally absent from the public source.
-- Full test suite: 29 passed, 26 failed, 1 skipped. Failures include stale navigation/sidebar expectations, golden image differences, and widget taps that do not reach the expected page. The complete UI suite is not green.
+- Full test suite: 30 passed, 25 failed, 1 skipped. Failures include stale navigation/sidebar expectations, golden image differences, and widget taps that do not reach the expected page. The complete UI suite is not green.
+- The clean-source desktop-parity test initially attempted to copy a generated session into the excluded QA evidence tree. That unnecessary copy was removed; the generated session remains in its temporary test folder and is fully exercised there.
 - The arm64 preview APK was built from this clean public source. It is debug-signed, contains no personal mTLS identity, and has not been validated on a physical scooter. See `source/apk/README.md` for the exact artifact hash, signing fingerprint, and source revision.
 - No physical vehicle behavior, repair outcome, iOS build, or desktop GUI clean-machine setup is claimed as validated by these checks.
 
