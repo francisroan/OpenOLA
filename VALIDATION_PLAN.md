@@ -35,10 +35,11 @@ This file records validation of the public Flutter source and lists checks that 
 - Validation used a clean extraction of the curated public source archive, with no personal mTLS identity, local SDK paths, caches, or generated Xcode environment files.
 - `flutter pub get` completed from the clean extraction.
 - `flutter analyze --no-pub` completed with no issues.
-- Focused decoder and protocol tests: 15 passed, 1 skipped. The skipped test requires a personal PKCS#12 identity intentionally absent from the public source.
-- Full test suite: 30 passed, 25 failed, 1 skipped. Failures include stale navigation/sidebar expectations, golden image differences, and widget taps that do not reach the expected page. The complete UI suite is not green.
+- Focused decoder, S1X catalog/widget, and protocol tests: 17 passed, 1 skipped. The skipped test requires a personal PKCS#12 identity intentionally absent from the public source.
+- Full test suite: 43 passed, 25 failed, 1 skipped. Failures include stale navigation/sidebar expectations, golden image differences, and widget taps that do not reach the expected page. The complete UI suite is not green.
 - The clean-source desktop-parity test initially attempted to copy a generated session into the excluded QA evidence tree. That unnecessary copy was removed; the generated session remains in its temporary test folder and is fully exercised there.
 - The arm64 preview APK was built from this clean public source. It is debug-signed, contains no personal mTLS identity, and has not been validated on a physical scooter. See `source/apk/README.md` for the exact artifact hash, signing fingerprint, and source revision.
-- No physical vehicle behavior, repair outcome, iOS build, or desktop GUI clean-machine setup is claimed as validated by these checks.
+- The clean Windows archive's catalog test passed with 597 bundled reference rows, including both S1X phases; the four DBC battery-decoder tests passed. ODX data is intentionally excluded, so ODX-backed read catalog entries, settings/actuator definitions, and related demo UDS responses are unavailable until an authorized local copy is supplied. The desktop GUI package has not been validated on a separate clean Windows machine.
+- No physical vehicle behavior, repair outcome, iOS build, Android device install, or separate-machine GUI setup is claimed as validated by these checks.
 
 The project notes record older Flutter and Kotlin/Desktop QA results. Those results apply only to their recorded source revisions and must not be carried forward as current validation.

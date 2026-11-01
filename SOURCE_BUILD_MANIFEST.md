@@ -31,9 +31,10 @@ Copy:
 - tool/glass/ source modules used by the GUI
 - tool/tests/ mock and GUI tests
 - BUILD.md
-- the sanitized DTC/DBC/ODX catalogs required by the app
+- the DBC and live-parameter catalogs included in the public app
+- `tool/oladiag/config/live_parameters.json` and both S1X phase maps used by the read-only signal/reference catalog
 
-The staged desktop source includes the current tool modules. The source workspace's older full GUI guide is not part of the public package; the current feature inventory and open issues are summarized in the repository root `RESEARCH_COMPARISON.md` and `VALIDATION_PLAN.md`.
+The staged desktop source includes the current tool modules. S1X CAN entries are compared with already-decoded live rows; UDS map rows without an explicit DID remain reference-only. The external ODX data extracted from the factory app is not redistributed. Without an authorized local ODX copy, ODX-backed UDS catalog rows, repair definitions, and related demo responses are unavailable; the desktop GUI still launches and its other bundled functions remain available. The source workspace's older full GUI guide is not part of the public package; the current feature inventory and open issues are summarized in `RESEARCH_COMPARISON.md` and `VALIDATION_PLAN.md`.
 
 Build prerequisites: Windows 10/11, Python 3.12 x64 with Tcl/Tk, and internet access for first-run dependency installation. From the extracted `windows-desktop/` directory, double-click `SETUP_AND_LAUNCH.cmd`; it creates a local virtual environment, installs `tool/oladiag/requirements.txt`, and starts the glass GUI. Later, double-click `30_scooter_gui.cmd`. See `GUI_README.md` and `BUILD.md`; do not commit `tool/gui_vendor/` wheels as the dependency source of record.
 
@@ -72,12 +73,13 @@ Copy:
 - mobile/test/
 - mobile/tools/ required for generation or identity preparation
 - mobile/BUILD.md, mobile/DESKTOP_PARITY.md, and mobile/THIRD_PARTY.md
+- mobile/MODEL_DIAGNOSTICS.md and the included S1X Phase 1/2 read-only parameter maps
 
 Build prerequisites: Flutter 3.47.6 and Dart 3.13.5 per the recorded validation, JDK 17, Android SDK Platform 37, Android NDK 28.2.13676358, and the pinned dependencies. The project README records Flutter build fixes and platform notes. iOS builds require macOS and Xcode.
 
 Android build from the extracted `mobile/` directory: run `flutter pub get`, then `flutter build apk --release`. The output is under `build/app/outputs/flutter-apk/`. iOS requires macOS/Xcode and a development team configured in Xcode.
 
-The APK is committed at `source/apk/OpenOLA-0.4.0-preview-arm64-v8a.apk`, so `git clone` downloads it with the source archives. It is a debug-signed preview for Android 8.0+ (API 26+), arm64-v8a. It excludes local mTLS identity assets; secure vehicle Wi-Fi diagnostics therefore require an authorized identity configured locally before use. The preview is not a store-ready release and has not been validated on a physical scooter. Verify its SHA-256 and signing certificate against `source/apk/README.md` before installation.
+The APK is committed at `source/apk/OpenOLA-0.4.2-preview-arm64-v8a.apk`, so `git clone` downloads it with the source archives. It is a debug-signed preview for Android 8.0+ (API 26+), arm64-v8a. It excludes local mTLS identity assets; secure vehicle Wi-Fi diagnostics therefore require an authorized identity configured locally before use. The preview is not a store-ready release and has not been validated on a physical scooter. Verify its SHA-256 and signing certificate against `source/apk/README.md` before installation.
 
 The original local artifact is not published because it contained private identity material. The public preview is built from the curated source archive after removing the private asset declaration; record its build provenance and signing fingerprint in `source/apk/README.md`.
 
