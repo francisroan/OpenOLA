@@ -1,11 +1,11 @@
 # Validation plan and open issues
 
-This is a checklist for future release validation, not a record of newly run tests. No app build or test was run while preparing this submission package.
+This file records validation of the public Flutter source and lists checks that still require follow-up. The public source archive and preview APK were rebuilt from a clean extraction on 1 Nov 2026.
 
 ## Current documentation mismatches
 
 - The source workspace's detailed GUI guide is stale relative to the current feature inventory. Keep the public feature and repair claims tied to current source and explicit validation records.
-- mobile/VALIDATION.md says no APK was built, while an arm64 release APK exists locally with an October 26 timestamp. Record which source revision created it and whether it was installed.
+- The internal workspace's `mobile/VALIDATION.md` may describe personal builds and credentials; it is not part of the public archive. Public APK provenance and hashes belong in `source/apk/README.md`.
 - android/ is the legacy Android project, apk/ is the Kotlin OpenOLA project, and mobile/ is the active Flutter project. Name these consistently.
 - The Gen 1, Gen 2, and Gen 3 evidence must stay separate. Do not infer one platform's behavior from another.
 
@@ -30,4 +30,14 @@ This is a checklist for future release validation, not a record of newly run tes
 
 ## Existing documented checks
 
-The project notes record 50 Flutter source tests and an older Kotlin/Desktop QA history. Those results apply to their recorded source revisions only. The current release candidate must be tied to a new source revision and build record before those results are reused.
+## Public Flutter validation, 1 Nov 2026
+
+- Validation used a clean extraction of the curated public source archive, with no personal mTLS identity, local SDK paths, caches, or generated Xcode environment files.
+- `flutter pub get` completed from the clean extraction.
+- `flutter analyze --no-pub` completed with no issues.
+- Focused decoder and protocol tests: 15 passed, 1 skipped. The skipped test requires a personal PKCS#12 identity intentionally absent from the public source.
+- Full test suite: 29 passed, 26 failed, 1 skipped. Failures include stale navigation/sidebar expectations, golden image differences, and widget taps that do not reach the expected page. The complete UI suite is not green.
+- The arm64 preview APK was built from this clean public source. It is debug-signed, contains no personal mTLS identity, and has not been validated on a physical scooter. See `source/apk/README.md` for the exact artifact hash, signing fingerprint, and source revision.
+- No physical vehicle behavior, repair outcome, iOS build, or desktop GUI clean-machine setup is claimed as validated by these checks.
+
+The project notes record older Flutter and Kotlin/Desktop QA results. Those results apply only to their recorded source revisions and must not be carried forward as current validation.
