@@ -1,6 +1,6 @@
 # Validation plan and open issues
 
-This file records validation of the public Flutter source and lists checks that still require follow-up. The public source archive and preview APK were rebuilt from a clean extraction on 1 Nov 2026.
+This file records validation of the public Flutter source and lists checks that still require follow-up. The source archives were prepared from curated source on 1 Nov 2026; the sanitized preview APK was rebuilt from a clean extraction on 2 Nov 2026.
 
 ## Current documentation mismatches
 
@@ -39,6 +39,7 @@ This file records validation of the public Flutter source and lists checks that 
 - Full test suite: 43 passed, 25 failed, 1 skipped. Failures include stale navigation/sidebar expectations, golden image differences, and widget taps that do not reach the expected page. The complete UI suite is not green.
 - The clean-source desktop-parity test initially attempted to copy a generated session into the excluded QA evidence tree. That unnecessary copy was removed; the generated session remains in its temporary test folder and is fully exercised there.
 - The arm64 preview APK was built from this clean public source. It is debug-signed, contains no personal mTLS identity, and has not been validated on a physical scooter. See `source/apk/README.md` for the exact artifact hash, signing fingerprint, and source revision.
+- The sanitized APK was rebuilt from a fresh extraction of the committed Flutter archive on 2 Nov 2026; package metadata and v2 signature were checked, and the APK contained no certificate, private-key, or keystore entries. Its source code is the same published 0.4.2+11 archive.
 - The clean Windows archive's catalog test passed with 597 bundled reference rows, including both S1X phases; the four DBC battery-decoder tests passed. ODX data is intentionally excluded, so ODX-backed read catalog entries, settings/actuator definitions, and related demo UDS responses are unavailable until an authorized local copy is supplied. The desktop GUI package has not been validated on a separate clean Windows machine.
 - No physical vehicle behavior, repair outcome, iOS build, Android device install, or separate-machine GUI setup is claimed as validated by these checks.
 

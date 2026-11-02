@@ -7,20 +7,21 @@ later.
 
 ## Integrity and signing
 
-- SHA-256: `52EEB300ACECF14362A7F4FDE8CAE219014ED375D2AE5AF7B2E2E7A9411FE560`
+- SHA-256: `927C3F26BFDA78E138BF282CC8E87E9948D6B5A2F44DEC258529CAAA25CAE808`
 - Signing certificate SHA-256: `F64A17D97F02A7B537AEB60DEE560EAE02DC13103DB5FB4B34E329A2445BB3BA`
 - Application ID: `in.crossfire.s1diag`
 - Version: `0.4.2` (version code `2011` for this ABI)
 - Minimum Android API: `26`
 
-This artifact was built from a clean extraction of the committed curated Flutter
-source archive. Source commit: `b5ed7524e969aa7fb9b64b5a0f942caead3faaae` (1 Nov
-2026). Build command:
+This artifact was rebuilt on 2 Nov 2026 from a clean extraction of the committed
+curated Flutter source archive. Source commit: `b5ed7524e969aa7fb9b64b5a0f942caead3faaae`.
+Build command:
 `flutter build apk --release --split-per-abi --target-platform android-arm64 --no-pub`
 with Flutter 3.47.6 / Dart 3.13.5, Android SDK Platform 37, and NDK 28.2.13676358.
 The produced file was `app-arm64-v8a-release.apk`. `apksigner verify` succeeded
 with APK Signature Scheme v2; one signer was present, with the fingerprint above.
-The public source archive omits personal mTLS identity assets.
+The public source archive and this APK omit local mTLS identity assets; the APK
+archive scan found no certificate, private-key, or keystore entries.
 
 This is a debug-signed community preview, not a store release. It has not been
 installed on a physical device or validated on a physical scooter. Secure vehicle
