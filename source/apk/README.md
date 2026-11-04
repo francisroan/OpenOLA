@@ -7,14 +7,14 @@ later.
 
 ## Integrity and signing
 
-- SHA-256: `927C3F26BFDA78E138BF282CC8E87E9948D6B5A2F44DEC258529CAAA25CAE808`
+- SHA-256: `0E53D4DF4C5693ED276CE4039C1EC2DABB4C44E776E5E185E581607F68FFE042`
 - Signing certificate SHA-256: `F64A17D97F02A7B537AEB60DEE560EAE02DC13103DB5FB4B34E329A2445BB3BA`
 - Application ID: `in.crossfire.s1diag`
-- Version: `0.4.2` (version code `2011` for this ABI)
+- Version: `0.4.2` (version code `2028` for this ABI)
 - Minimum Android API: `26`
 
-This artifact was rebuilt on 2 Nov 2026 from a clean extraction of the committed
-curated Flutter source archive. Source commit: `b5ed7524e969aa7fb9b64b5a0f942caead3faaae`.
+This artifact was rebuilt on 4 Nov 2026 from the curated Flutter source archive
+(Phases 1-5). Source commit: `bbb49364d6fc2b19c2caf2fd10431cfcbc58b800`.
 Build command:
 `flutter build apk --release --split-per-abi --target-platform android-arm64 --no-pub`
 with Flutter 3.47.6 / Dart 3.13.5, Android SDK Platform 37, and NDK 28.2.13676358.
