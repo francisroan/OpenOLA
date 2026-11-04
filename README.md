@@ -4,7 +4,7 @@ OpenOLA is an independent community project for source-led diagnostics, repair r
 
 **Bluetooth security note:** Our project has identified a Bluetooth security vulnerability. No technical detail is included here.
 
-This is not affiliated with or supported by Ola Electric. Model, year, head-unit build, ECU firmware, and module firmware matter. A result on one scooter is not proof for every model. You confirm that we are not responsible for any issues, warranty, liability, dangers, bricking of scooter or any other issues you may or may not face and we are free from all obligations.
+This is not affiliated with or supported by Ola Electric. Model, year, head-unit build, ECU firmware, and module firmware matter. A result on one scooter is not proof for every model. You confirm that we are not responsible for any issues, warranty, liability, dangers, bricking of scooter or any other issues you may or may not face and we are free from all obligations. This repo also may or may not contain sensitive information about Ola Scooter/Apps, and are released purely for educational and personal use and we are not liable for any damages that may incur to you or any company that arises from the misuse.
 
 ## What this repository contributes
 
