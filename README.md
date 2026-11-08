@@ -2,7 +2,7 @@
 
 OpenOLA is an independent, offline-first scooter diagnostics and repair research project. The active Android app is built with Flutter; this repository also contains a Windows diagnostic GUI, an older Kotlin app, and a [knowledge base](knowledge-base/README.md). It is not affiliated with Ola Electric.
 
-**Release review status, 8 November 2026:** Git currently contains the older **0.4.2 preview**. A **0.5.19+2059 Public** APK has been built locally and is being reviewed. The new APK and matching source archive have **not** been uploaded. The 0.4.2 download below does not contain the features described for 0.5.19.
+**Release review status, 8 November 2026:  **0.5.19+2059 Public** APK has been built.
 
 ## Current Public app capabilities
 
