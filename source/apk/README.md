@@ -1,5 +1,26 @@
 # Android preview APK
 
+## Current Public build: 0.5.19
+
+`OpenOLA-0.5.19-public-arm64-v8a.apk` is the current Public build. It is a
+debug-signed arm64 APK for Android 8.0+ (API 26+), application ID
+`in.crossfire.s1diag`, version code 2059. SHA-256:
+`AD9A5619E110ADABBD1AA2D919DA5896906A4DF9DE57ED2AFB8A525C8E455C2B`.
+It was built from the Flutter source archive in this repository using Flutter
+3.47.6 / Dart 3.13.5 and Android SDK 37 / NDK 28.2.13676358.
+
+This build includes the diagnostic client identity assets (`ecos.crt`,
+`ecos.key`, `ecos-ios.p12`, and the diagnostic root certificate) for secure
+local gRPC. The private key is extractable from the APK and is intentionally
+included at the project owner's request. Do not treat it as a personal or
+per-user credential. It may be reused by anyone who obtains this APK.
+
+The owner installed this version on a OnePlus CPH2573IN. Android reported
+version 0.5.19 / code 2059 and accepted a launch command. No scooter-side test
+of this exact build is recorded.
+
+The 0.4.2 artifact below is retained as the previous credential-free preview.
+
 `OpenOLA-0.4.2-preview-arm64-v8a.apk` is included in this folder. Cloning the
 repository downloads it together with the Flutter and Windows GUI source archives.
 It is a debug-signed preview for arm64-v8a devices running Android 8.0 (API 26) or

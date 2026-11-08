@@ -57,7 +57,7 @@ Build prerequisites: JDK 17, Android Studio/Android SDK, Android Gradle Plugin a
 
 Windows build: open the extracted `android-kotlin/apk/` in Android Studio and build the debug APK, or run `gradlew.bat assembleDebug` from that directory after Android Studio has configured the local Android SDK. The output is under `app/build/outputs/apk/debug/`.
 
-Before committing, inspect app/src/main/assets/certs/. Do not publish ecos.key, any private signing key, account material, or vehicle credentials. A build using mTLS must receive an explicitly authorized development identity outside the public repository; never substitute a live/vendor identity.
+The older Kotlin app release has no embedded client identity. Its separate credential policy remains unchanged.
 
 ## 3. Flutter OpenOLA
 
@@ -67,7 +67,7 @@ Copy:
 - mobile/analysis_options.yaml
 - mobile/lib/
 - mobile/proto/ and mobile/lib/generated/
-- mobile/assets/ required by pubspec.yaml, with approved non-secret data only
+- mobile/assets/ required by pubspec.yaml, including diagnostic certificate/key assets in Public 0.5.19 as explicitly chosen by the project owner
 - mobile/android/ and its Gradle wrapper/configuration
 - mobile/ios/ and workspace/project files when offering iOS
 - mobile/test/
@@ -79,11 +79,11 @@ Build prerequisites: Flutter 3.47.6 and Dart 3.13.5 per the recorded validation,
 
 Android build from the extracted `mobile/` directory: run `flutter pub get`, then `flutter build apk --release`. The output is under `build/app/outputs/flutter-apk/`. iOS requires macOS/Xcode and a development team configured in Xcode.
 
-The APK is committed at `source/apk/OpenOLA-0.4.2-preview-arm64-v8a.apk`, so `git clone` downloads it with the source archives. It is a debug-signed preview for Android 8.0+ (API 26+), arm64-v8a. It excludes local mTLS identity assets; secure vehicle Wi-Fi diagnostics therefore require an authorized identity configured locally before use. The preview is not a store-ready release and has not been validated on a physical scooter. Verify its SHA-256 and signing certificate against `source/apk/README.md` before installation.
+The current APK is `source/apk/OpenOLA-0.5.19-public-arm64-v8a.apk`; 0.4.2 is retained as a previous preview. Version 0.5.19 bundles the client identity needed for mTLS, including a private key that can be extracted and reused by APK recipients. This is an intentional owner decision for this release. Verify the artifact hash in `source/apk/README.md` before installation.
 
-The original local artifact is not published because it contained private identity material. The public preview is built from the curated source archive after removing the private asset declaration; record its build provenance and signing fingerprint in `source/apk/README.md`.
+The 0.5.19 APK was built from the current Flutter source archive. It is debug-signed for community distribution, not a store release. Its owner installed it on a OnePlus CPH2573IN; scooter-side validation of this exact build is not recorded.
 
-Inspect mobile/assets/certs/ before committing. Never publish private keys, local signing material, vehicle IDs, personal captures, or credentials.
+Do not add personal captures, personal vehicle identifiers, Wi-Fi passwords, signing keys, or account credentials. The shared diagnostic client identity in 0.5.19 is a documented exception explicitly requested by the project owner; it can be reused by people who download the public package.
 
 ## 4. Legacy Android source
 
