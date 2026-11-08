@@ -15,7 +15,7 @@ local gRPC. The private key is extractable from the APK and is intentionally
 included at the project owner's request. Do not treat it as a personal or
 per-user credential. It may be reused by anyone who obtains this APK.
 
-The owner installed this version on a OnePlus CPH2573IN. Android reported
+The owner installed this version on a OnePlus 12. Android reported
 version 0.5.19 / code 2059 and accepted a launch command. No scooter-side test
 of this exact build is recorded.
 
