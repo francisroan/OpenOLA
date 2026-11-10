@@ -1,0 +1,57 @@
+name: openola
+description: Local scooter diagnostics for Android and iOS.
+publish_to: none
+version: 0.5.19+2059
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  grpc: ^5.1.0
+  protobuf: ^6.0.0
+  fixnum: ^1.1.1
+  async: ^2.13.0
+  shared_preferences: ^2.5.4
+  flutter_reactive_ble: ^5.6.0
+  permission_handler: ^12.0.1
+  pointycastle: ^4.0.0
+  archive: ^4.3.0
+  crypto: ^3.0.7
+  file_picker: ^13.1.0
+  path_provider: 2.1.6
+  share_plus: ^13.1.0
+  mobile_scanner: ^7.2.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  protoc_plugin: ^25.0.0
+  flutter_launcher_icons: ^0.14.4
+dependency_overrides:
+  # path_provider_android 2.3.x switched to a JNI implementation that adds a full
+  # C++/CMake native build (jni, jni_flutter) on top of the NDK that Flutter already
+  # requires. The 2.2.x line is API-identical for our use (temp/app-docs paths) and
+  # pure-Dart on the plugin side, so it drops that extra native compile and keeps the
+  # Android build lighter. Remove this override only if you deliberately want the
+  # JNI-based path_provider. See README build section.
+  path_provider_android: '>=2.2.5 <2.3.0'
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/Inter.ttf
+  assets:
+    - assets/data/
+    - assets/data/moveos5_catalog.json
+    - assets/firmware/mcu/
+    - assets/images/
+    - assets/certs/
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/scooter.png
+  remove_alpha_ios: true
+  adaptive_icon_background: '#101827'
+  adaptive_icon_foreground: assets/images/scooter.png

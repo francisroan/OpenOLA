@@ -1,0 +1,583 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import '../protocol/can.dart';
+import 'identifiers.dart';
+import 'vehicle_profile.dart';
+
+class Fault {
+  const Fault(
+    this.code,
+    this.description,
+    this.status, {
+    this.meaningVerified = true,
+  });
+  final String code, description;
+  final int status;
+  final bool meaningVerified;
+  Map<String, Object> toJson() => {
+    'code': code,
+    'description': description,
+    'status': status,
+    'meaningVerified': meaningVerified,
+  };
+}
+
+class Signal {
+  Signal(Map<String, dynamic> json)
+    : name = json['name'] as String,
+      start = json['startbit'] as int,
+      bits = json['bitlength'] as int,
+      intel =
+          (json['endianess'] ?? 'intel').toString().toLowerCase() == 'intel',
+      signed = json['signed'] == true,
+      factor = (json['scaling'] as num?)?.toDouble() ?? 1,
+      offset = (json['offset'] as num?)?.toDouble() ?? 0,
+      unit = json['units']?.toString() ?? '';
+  final String name, unit;
+  final int start, bits;
+  final bool intel, signed;
+  final double factor, offset;
+  double decode(List<int> data) {
+    var raw = BigInt.zero;
+    if (intel) {
+      for (var i = 0; i < data.length; i++) {
+        raw |= BigInt.from(data[i]) << (i * 8);
+      }
+      raw = (raw >> start) & ((BigInt.one << bits) - BigInt.one);
+    } else {
+      var index = start;
+      for (var i = 0; i < bits; i++) {
+        final byte = index ~/ 8;
+        final value = byte < data.length ? (data[byte] >> (index % 8)) & 1 : 0;
+        raw = (raw << 1) | BigInt.from(value);
+        index = index % 8 == 0 ? index + 15 : index - 1;
+      }
+    }
+    if (signed && (raw & (BigInt.one << (bits - 1))) != BigInt.zero) {
+      raw -= BigInt.one << bits;
+    }
+    return raw.toDouble() * factor + offset;
+  }
+}
+
+class ParamField {
+  ParamField(Map<String, dynamic> json)
+    : name = json['Parameter'].toString().trim(),
+      unit = json['Unit']?.toString() ?? '',
+      bits = int.tryParse('${json['Size (Bits)']}') ?? 0,
+      start = int.tryParse('${json['StartBit']}') ?? 0,
+      resolution = double.tryParse('${json['Resolution']}') ?? 1,
+      offset = double.tryParse('${json['Offset']}') ?? 0,
+      minimum = double.tryParse('${json['Physical Minimum']}'),
+      maximum = double.tryParse('${json['Physical Maximum']}');
+  final String name, unit;
+  final int bits, start;
+  final double resolution, offset;
+  final double? minimum, maximum;
+}
+
+class Parameter {
+  Parameter(this.ecu, Map<String, dynamic> json)
+    : name = json['Command'].toString(),
+      did = int.parse(
+        json['RequestFormat'].toString().replaceAll(' ', '').substring(2, 6),
+        radix: 16,
+      ),
+      length = json['AttachedDatalength (Bytes)'] as int? ?? 0,
+      fields = (json['Parameters'] as List? ?? [])
+          .map((j) => ParamField(j as Map<String, dynamic>))
+          .toList();
+  final Ecu ecu;
+  final String name;
+  final int did, length;
+  final List<ParamField> fields;
+  Map<String, double> decode(List<int> bytes, {bool reversed = false}) {
+    final input = reversed ? bytes.reversed.toList() : bytes;
+    var raw = BigInt.zero;
+    for (var i = 0; i < input.length; i++) {
+      raw |= BigInt.from(input[i]) << (8 * i);
+    }
+    return {
+      for (final f in fields)
+        f.name:
+            ((raw >> f.start) & ((BigInt.one << f.bits) - BigInt.one))
+                    .toDouble() *
+                f.resolution +
+            f.offset,
+    };
+  }
+
+  List<int> encode(
+    List<int> original,
+    Map<String, double> edits, {
+    bool reversed = false,
+  }) {
+    if (original.length != length) {
+      throw ArgumentError('Expected $length current bytes');
+    }
+    final base = reversed ? original.reversed.toList() : original;
+    var raw = BigInt.zero;
+    for (var i = 0; i < base.length; i++) {
+      raw |= BigInt.from(base[i]) << (i * 8);
+    }
+    for (final edit in edits.entries) {
+      final f = fields.firstWhere((f) => f.name == edit.key);
+      final v = edit.value;
+      if (!v.isFinite ||
+          f.resolution == 0 ||
+          (f.minimum != null && v < f.minimum!) ||
+          (f.maximum != null && v > f.maximum!)) {
+        throw ArgumentError('${f.name}: outside documented encoding bounds');
+      }
+      final scaled = (v - f.offset) / f.resolution;
+      final value = BigInt.from(scaled.round());
+      if ((scaled - scaled.round()).abs() > 1e-6 ||
+          value < BigInt.zero ||
+          value >= BigInt.one << f.bits) {
+        throw ArgumentError('${f.name}: not representable');
+      }
+      final mask = ((BigInt.one << f.bits) - BigInt.one) << f.start;
+      raw = (raw & ~mask) | (value << f.start);
+    }
+    final out = List.generate(
+      length,
+      (i) => ((raw >> (i * 8)) & BigInt.from(255)).toInt(),
+    );
+    return reversed ? out.reversed.toList() : out;
+  }
+}
+
+/// Read-only reference from the imported S1X live-parameter maps. A map row is
+/// metadata only: it does not prove that a CAN frame was observed or provide a
+/// UDS request address.
+class S1xLiveParameter {
+  S1xLiveParameter(this.phase, this.ecu, Map<String, dynamic> json)
+    : record = Map<String, dynamic>.unmodifiable(json),
+      name = (json['Parameter Name'] ?? '').toString().trim(),
+      source = (json['Source'] ?? 'Unknown').toString().toUpperCase(),
+      dbcName = json['DBC Name']?.toString(),
+      unit = json['Unit']?.toString() ?? '',
+      canId =
+          int.tryParse('${json['CAN ID (Dec)']}') ??
+          _hexId(json['CAN ID (Hex)']),
+      resolution = double.tryParse('${json['Resolution']}'),
+      offset = double.tryParse('${json['offset']}'),
+      minimum = double.tryParse('${json['Physical Minimum']}'),
+      maximum = double.tryParse('${json['Physical Maximum']}');
+
+  static int? _hexId(dynamic value) {
+    if (value == null || value.toString().trim().isEmpty) return null;
+    return int.tryParse(value.toString().replaceFirst('0x', ''), radix: 16);
+  }
+
+  final int phase;
+  final Map<String, dynamic> record;
+  final String ecu, name, source, unit;
+  final String? dbcName;
+  final int? canId;
+  final double? resolution, offset, minimum, maximum;
+  bool get hasCanMapping => source == 'CAN' && canId != null && dbcName != null;
+  String get signature {
+    final keys = record.keys.toList()..sort();
+    return '$ecu|${jsonEncode({for (final key in keys) key: record[key]})}';
+  }
+}
+
+class Actuator {
+  Actuator(this.label, this.did, this.group, this.danger);
+  final String label, group;
+  final int did;
+  final bool danger;
+}
+
+class ConfigCommand {
+  const ConfigCommand(this.did, this.name, this.data, this.ecu, this.vehType);
+  final int did;
+  final String name;
+  final List<int> data;
+  final String ecu, vehType;
+  bool get isJtag => name.toLowerCase().contains('jtag');
+  String get didHex =>
+      '0x${did.toRadixString(16).toUpperCase().padLeft(4, '0')}';
+}
+
+class FaultBit {
+  const FaultBit(this.name, this.startbit);
+  final String name;
+  final int startbit;
+
+  /// "BMS00_Voltage_sensor_failureCell1" -> "Voltage sensor failure (Cell 1)".
+  String get label {
+    var s = name.replaceFirst(
+      RegExp(r'^(BMS\d*|MCU|VCU|IMCU)_', caseSensitive: false),
+      '',
+    );
+    final cell = RegExp(
+      r'Cell\s*(\d+)\s*$',
+      caseSensitive: false,
+    ).firstMatch(s);
+    if (cell != null) {
+      s = '${s.substring(0, cell.start)} (Cell ${cell.group(1)})';
+    }
+    s = s.replaceAll('_', ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+    return s.isEmpty ? name : s[0].toUpperCase() + s.substring(1);
+  }
+}
+
+class FaultFrame {
+  const FaultFrame(this.ecu, this.id, this.message, this.bits);
+  final String ecu; // BMS / MCU / VCU / IMCU
+  final int id;
+  final String message;
+  final List<FaultBit> bits;
+
+  /// Active fault labels given the latest raw bytes for this frame's CAN id.
+  List<String> active(List<int>? data) {
+    if (data == null) return const [];
+    final out = <String>[];
+    for (final b in bits) {
+      final byte = b.startbit ~/ 8, bit = b.startbit % 8;
+      if (byte < data.length && (data[byte] >> bit) & 1 == 1) out.add(b.label);
+    }
+    return out;
+  }
+}
+
+class Catalog {
+  final signals = <int, List<Signal>>{};
+  final profileSignals = <VehicleProfile, Map<int, List<Signal>>>{};
+  final profileNames = <VehicleProfile, Map<int, String>>{};
+  final s1xParametersByPhase = <int, List<S1xLiveParameter>>{};
+  static const s1xModelCodes = {7, 10, 12, 13, 14, 15, 16, 20, 21, 22, 23};
+  static bool isS1xModel(int? code) =>
+      code != null && s1xModelCodes.contains(code);
+  static int? s1xPhaseForModel(int? code) => switch (code) {
+    12 => 1,
+    10 || 13 => 2,
+    _ => null,
+  };
+  List<S1xLiveParameter> s1xParametersForModel(int? code) {
+    if (!isS1xModel(code)) return const [];
+    final phase = s1xPhaseForModel(code);
+    if (phase != null) return s1xParametersByPhase[phase] ?? const [];
+    final p1 = s1xParametersByPhase[1] ?? const <S1xLiveParameter>[];
+    final p2Signatures = (s1xParametersByPhase[2] ?? const <S1xLiveParameter>[])
+        .map((row) => row.signature)
+        .toSet();
+    // When the model map does not establish a phase, omit definitions that
+    // conflict between phases instead of guessing (for example, front/rear brake).
+    return p1.where((row) => p2Signatures.contains(row.signature)).toList();
+  }
+
+  List<Signal> signalsFor(VehicleProfile profile, int id) =>
+      (profile == VehicleProfile.legacy
+          ? signals
+          : profileSignals[profile])?[id] ??
+      const [];
+  String nameFor(VehicleProfile profile, int id) =>
+      (profile == VehicleProfile.legacy
+          ? messageNames
+          : profileNames[profile])?[id] ??
+      'Raw CAN';
+  Iterable<FaultFrame> faultsFor(VehicleProfile profile) sync* {
+    // The production Gen1 fault maps carry the complete per-bit labels. The
+    // generic DBC below is a fallback for profiles whose dedicated layout has
+    // not been established; 0x333 means MCU on Gen1 but IMCU on newer models.
+    if (profile == VehicleProfile.legacy) {
+      yield* faultFrames.where(
+        (f) => f.ecu == 'BMS' || f.ecu == 'MCU' || f.ecu == 'VCU',
+      );
+      return;
+    }
+    final map = profile == VehicleProfile.legacy
+        ? signals
+        : profileSignals[profile] ?? {};
+    // The selected DBC alone defines the fault layout. Never decode the same
+    // 0x333 bytes as both MCU and IMCU, nor import conflicting dedicated maps.
+    for (final e in map.entries) {
+      final name = nameFor(profile, e.key);
+      if (!RegExp(r'fault|error', caseSensitive: false).hasMatch(name)) {
+        continue;
+      }
+      final bits = e.value.where(
+        (s) =>
+            s.bits == 1 &&
+            s.intel &&
+            RegExp(
+              r'fault|error|fail|over|under|short|abnormal|inhibit',
+              caseSensitive: false,
+            ).hasMatch(s.name),
+      );
+      if (bits.isEmpty) continue;
+      final ecu = name.toUpperCase().startsWith('ABS')
+          ? 'ABS'
+          : name.toUpperCase().contains('BMS') ||
+                name.toUpperCase().contains('BATTERY')
+          ? 'BMS'
+          : name.toUpperCase().contains('MCU')
+          ? 'MCU'
+          : 'VCU';
+      yield FaultFrame(ecu, e.key, name, [
+        for (final b in bits) FaultBit(b.name, b.start),
+      ]);
+    }
+  }
+
+  final messageNames = <int, String>{};
+  final dtcs = <Ecu, Map<String, String>>{};
+  final actuators = <Actuator>[];
+  final parameters = <Parameter>[];
+  final identifiers = <ReadIdentifier>[];
+  final bmsConfiguration = <ReadIdentifier>[];
+  final notifications = <int, String>{};
+  // Per-ECU live fault-flag frames (from the production app's *_fault_dbc.json).
+  final faultFrames = <FaultFrame>[];
+  // Manufacturing ECU-write commands (production app's som_ecu_config.json).
+  final somCommands = <ConfigCommand>[];
+  bool somResetBms = false;
+  static Future<Catalog> load() async {
+    final c = Catalog();
+    final vehicle =
+        jsonDecode(
+              await rootBundle.loadString('assets/data/moveos5_catalog.json'),
+            )
+            as Map<String, dynamic>;
+    for (final e in (vehicle['CommandFromVehicle'] as Map).entries) {
+      final code = int.tryParse(e.key.toString());
+      if (code != null) c.notifications[code] = e.value.toString();
+    }
+    final dbc =
+        jsonDecode(await rootBundle.loadString('assets/data/da_can_dbc.json'))
+            as Map<String, dynamic>;
+    for (final j in dbc['messages'] as List) {
+      final id = j['id'] as int;
+      c.messageNames[id] = j['name'] as String;
+      c.signals[id] = (j['signals'] as List? ?? [])
+          .map((s) => Signal(s as Map<String, dynamic>))
+          .toList();
+    }
+    for (final entry in const {
+      VehicleProfile.common: 'common_can_dbc.json',
+      VehicleProfile.moveos561: 'imcu13_can_dbc.json',
+    }.entries) {
+      final data =
+          jsonDecode(await rootBundle.loadString('assets/data/${entry.value}'))
+              as Map;
+      c.profileSignals[entry.key] = {};
+      c.profileNames[entry.key] = {};
+      for (final m in data['messages'] as List) {
+        final id = m['id'] as int;
+        c.profileSignals[entry.key]![id] = [
+          for (final s in m['signals'] as List)
+            Signal(Map<String, dynamic>.from(s as Map)),
+        ];
+        c.profileNames[entry.key]![id] = m['name'] as String;
+      }
+    }
+    for (final phase in const [1, 2]) {
+      final decoded =
+          jsonDecode(
+                await rootBundle.loadString(
+                  'assets/data/live_parameters_s1x_phase$phase.json',
+                ),
+              )
+              as Map<String, dynamic>;
+      c.s1xParametersByPhase[phase] = [
+        for (final ecu in const ['BMS', 'MCU', 'VCU'])
+          for (final row in decoded[ecu] as List? ?? const [])
+            S1xLiveParameter(phase, ecu, Map<String, dynamic>.from(row as Map)),
+      ];
+    }
+    // Dedicated per-ECU fault-flag maps (1 bit = 1 named fault when set).
+    for (final (ecu, file) in const [
+      ('BMS', 'bms_fault_dbc.json'),
+      ('MCU', 'mcu_fault_dbc.json'),
+      ('VCU', 'vcu_faults_dbc.json'),
+      ('IMCU', 'imcu_faults.json'),
+    ]) {
+      try {
+        final decoded = jsonDecode(
+          await rootBundle.loadString('assets/data/$file'),
+        );
+        // Files are either {message:[...]}, a single {signals:...} message, or a list.
+        final raw = decoded is Map && decoded.containsKey('message')
+            ? decoded['message']
+            : decoded;
+        final list = raw is List ? raw : [raw];
+        for (final m in list) {
+          final msg = m as Map<String, dynamic>;
+          final bits = <FaultBit>[
+            for (final s in (msg['signals'] as List? ?? []))
+              if ((s as Map)['bitlength'] == 1)
+                FaultBit(s['name'].toString(), s['startbit'] as int),
+          ];
+          if (bits.isNotEmpty) {
+            c.faultFrames.add(
+              FaultFrame(ecu, msg['id'] as int, msg['name'].toString(), bits),
+            );
+          }
+        }
+      } catch (_) {
+        /* a missing/oddly-shaped fault map must not break startup */
+      }
+    }
+    // Manufacturing config (reference + the addressable BMS reset).
+    try {
+      final s =
+          jsonDecode(
+                await rootBundle.loadString('assets/data/som_ecu_config.json'),
+              )
+              as Map<String, dynamic>;
+      c.somResetBms = s['reset_bms'] == true;
+      for (final cmd in (s['CommandList'] as List? ?? [])) {
+        final m = cmd as Map<String, dynamic>;
+        c.somCommands.add(
+          ConfigCommand(
+            (m['did'] as num).toInt(),
+            m['name'].toString(),
+            [for (final b in (m['data'] as List? ?? [])) (b as num).toInt()],
+            m['ecu_type']?.toString() ?? '',
+            m['veh_type']?.toString() ?? '',
+          ),
+        );
+      }
+    } catch (_) {
+      /* config is optional reference data */
+    }
+    final dtc =
+        jsonDecode(await rootBundle.loadString('assets/data/dtc_ecu_list.json'))
+            as Map<String, dynamic>;
+    var text = await rootBundle.loadString('assets/data/odx.json');
+    if (text.startsWith('\uFEFF')) text = text.substring(1);
+    final odx = jsonDecode(text) as Map<String, dynamic>;
+    final seen = <String>{};
+    for (final ecu in Ecu.values) {
+      c.dtcs[ecu] = {
+        for (final row in dtc[ecu.label] as List? ?? [])
+          row['DTC Code'].toString().toUpperCase(): row['Description']
+              .toString(),
+      };
+      for (final raw in odx[ecu.label] as List? ?? []) {
+        final j = raw as Map<String, dynamic>;
+        final request = j['RequestFormat']
+            .toString()
+            .replaceAll(' ', '')
+            .toUpperCase();
+        if (request.length < 6) continue;
+        if (request.startsWith('22') &&
+            request.length == 6 &&
+            !c.identifiers.any(
+              (r) =>
+                  r.ecu == ecu &&
+                  r.did == int.parse(request.substring(2), radix: 16),
+            )) {
+          c.identifiers.add(ReadIdentifier(ecu, j));
+        }
+        if (request.startsWith('2E')) {
+          c.parameters.add(Parameter(ecu, j));
+          if (ecu == Ecu.bms &&
+              request.length == 6 &&
+              request.substring(2).startsWith('E') &&
+              !c.bmsConfiguration.any(
+                (r) => r.did == int.parse(request.substring(2), radix: 16),
+              )) {
+            c.bmsConfiguration.add(
+              ReadIdentifier(ecu, {
+                ...j,
+                'RequestFormat': '22${request.substring(2)}',
+              }),
+            );
+          }
+        }
+        if (ecu != Ecu.vcu || !request.startsWith('2F') || j['ECUTest'] != 1) {
+          continue;
+        }
+        var label = j['Command'].toString();
+        if (label.startsWith('IO')) {
+          label = label.substring(label.indexOf('_') + 1);
+        }
+        label = label
+            .replaceFirst(
+              RegExp(
+                r' (12V supply control|supply control|supply|control|Control|12V supply Control)? ?[Cc]ommand$',
+              ),
+              '',
+            )
+            .trim();
+        if (!seen.add(label)) continue;
+        final n = label.toLowerCase();
+        bool has(List<String> words) => words.any(n.contains);
+        final group = has(['beam', 'indicator', 'light', 'drl', 'lamp', 'horn'])
+            ? 'Lights & signals'
+            : has([
+                'contactor',
+                'cpw',
+                'control pilot',
+                'charger',
+                'aux battery',
+                'dc-dc',
+                'dcdc',
+                '3.8v',
+                '3v3',
+                'level shifter',
+              ])
+            ? 'Power & HV'
+            : has(['lock', 'alarm', 'seat occupant'])
+            ? 'Locks & security'
+            : has([
+                'switch',
+                'sensor',
+                'stand',
+                'pad wear',
+                'brake sup',
+                'occupant',
+                'ssb',
+              ])
+            ? 'Switches & sensors'
+            : 'System & module';
+        c.actuators.add(
+          Actuator(
+            label,
+            int.parse(request.substring(2, 6), radix: 16),
+            group,
+            group == 'Power & HV' ||
+                has([
+                  'lock',
+                  'alarm',
+                  'contactor',
+                  'fault reset',
+                  'power',
+                  'boot',
+                  'reset',
+                  'brake supply',
+                  'brake suppy',
+                ]),
+          ),
+        );
+      }
+    }
+    return c;
+  }
+
+  List<Fault> parseFaults(Ecu ecu, List<int> payload) {
+    final body = payload.skip(3).toList();
+    final out = <Fault>[];
+    for (var i = 0; i + 4 <= body.length; i += 4) {
+      final code = hex(body.sublist(i, i + 3));
+      if (code == '000000') continue;
+      out.add(
+        Fault(
+          code,
+          dtcs[ecu]?[code] ?? 'Unknown code — absent from catalog',
+          body[i + 3],
+          meaningVerified: dtcs[ecu]?.containsKey(code) ?? false,
+        ),
+      );
+    }
+    return out;
+  }
+
+  Map<String, double> decode(int id, List<int> bytes) => {
+    for (final s in signals[id] ?? <Signal>[]) s.name: s.decode(bytes),
+  };
+}

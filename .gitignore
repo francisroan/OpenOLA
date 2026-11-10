@@ -1,22 +1,30 @@
-# Flutter caches/build outputs from the extracted-source workspace
+# Workspace/runtime state
+.codex-attachments/
+.flutter-tmp/
+.flutter-tool-data/
+.gradle-user-home/
+captures/
+scratch/
+
+# Flutter/Dart/Gradle outputs and caches
 **/.dart_tool/
-**/build/
-**/.gradle/
-**/.kotlin/
-**/.idea/
-**/.vscode/
-**/__pycache__/
-**/*.iml
-**/local.properties
+**/.flutter-plugins
 **/.flutter-plugins-dependencies
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/flutter_export_environment.sh
-**/ios/Flutter/ephemeral/
+**/.packages
+**/build/
+**/local.properties
+**/.gradle/
 
-# The source tree is distributed as a reviewed ZIP; this folder is a local
-# extraction used for browsing/building. Keep its committed BUILD.md tracked.
-/source/flutter-mobile/mobile/**
+# Generated test artifacts
+**/test/failures/
+**/test/goldens/*.png
+**/__pycache__/
 
-# Never stage a local install/build binary by accident. The reviewed preview APK
-# is already tracked explicitly under source/apk/.
-*.apk
+# Editor and OS state
+**/.idea/
+**/*.iml
+**/.DS_Store
+
+# Keep the requested APK explicitly with git add -f; other generated APKs stay out.
+**/*.apk
+**/*.apk.sha1

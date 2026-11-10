@@ -1,0 +1,44 @@
+# Strings that must exist in every release APK (one per line). Add one for each
+# user-visible change you ship so a stale build is caught before it is installed.
+Energy available
+Diagnose: faults
+Choose APK or bundle
+installFiles
+Not available from this scooter
+Permanent fault
+Brake light
+Stop safely
+
+Pack SOC comes from the BMS
+discoverIpv4Hosts
+possible scooter address
+— Wh
+Uninstall from scooter
+Transfer in progress
+does not expose the Sport/Hyper
+Transfer in progress
+Ride the scooter
+Component tests
+UDS test tool
+has no restriction table
+Pull selected
+Connect to this address
+Return to Customer
+HMI setting: 
+Failed at
+saveToDownloads
+Auto-reconnect attempt
+startKeepAlive
+Motor calibration
+Start motor calibration
+Return to OLA HMI
+MoveOS build
+Read VCU variant record
+Gen3 model 31
+Read head-unit identifiers
+Pairing unavailable
+Android release unavailable
+MCU replacement preflight
+BMS balancing:
+Search vehicle data
+stored-fault read:

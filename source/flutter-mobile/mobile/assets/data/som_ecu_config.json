@@ -1,0 +1,31 @@
+{
+  "reset_bms":true,
+  "version": "4.2.1",
+  "CommandList":
+  [
+    {
+      "did":53116,
+      "name":"Awk_Stby_Dly",
+      "data":[64,31,1],
+      "size_bytes":3,
+      "ecu_type":"BCM",
+      "veh_type":"S1 Pro With Upgrade"
+    },
+    {
+      "did":257,
+      "name":"BCM_JTAG Configuration",
+      "data":[2],
+      "size_bytes":1,
+      "ecu_type":"BCM",
+      "veh_type":"S1 Pro With Upgrade"
+    },
+    {
+      "did":58578,
+      "name":"BMS_JTAG Configuration",
+      "data":[2],
+      "size_bytes":1,
+      "ecu_type":"BMS",
+      "veh_type":"S1 Pro With Upgrade"
+    }
+  ]
+}

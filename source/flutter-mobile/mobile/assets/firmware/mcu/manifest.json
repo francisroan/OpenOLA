@@ -1,0 +1,140 @@
+{
+  "source": "OlaDiagnostics-0.32.215-improved.apk",
+  "files": [
+    {
+      "file": "idiq_file.bin",
+      "length": 7376,
+      "sha256": "46F2AD1B22B5760C27085ADAA1D8CCFAB66BEAD38DE7BFC6103E4D36C9D1CCFE"
+    },
+    {
+      "file": "imcu_file.bin",
+      "length": 513024,
+      "sha256": "AA82F667C079D057A25C64F3C9112629BE3781159D4389FBB8443B3DDDCAC0D5"
+    },
+    {
+      "file": "mcu_52_01_20_02.bin",
+      "length": 461296,
+      "sha256": "23CF76E3CBBD7C1867190D1652A4C0F4EE621F4DE61D9584A156AEC11A9CA364"
+    },
+    {
+      "file": "mcu_52_02_122_01.bin",
+      "length": 518016,
+      "sha256": "35C88CCAF0F5A7FD17A26E81FE9289902DBA57BBFED937D71C8DF34199DCEAF4"
+    },
+    {
+      "file": "mcu_52_02_126.bin",
+      "length": 519056,
+      "sha256": "4FA77F51069C53C2D8EB6830637654D444573F0E28DC80C829C4E8D7E65F026E"
+    },
+    {
+      "file": "mcu_52_02_54_02.bin",
+      "length": 500832,
+      "sha256": "35B63E7E52C4A54FBFD123252FB790EA007C69AA7128B5895733BCCB2247F915"
+    },
+    {
+      "file": "mcu_72_01_35_02.bin",
+      "length": 98304,
+      "sha256": "2BB449CDA56E42376BCAB4206B9022FC85D1E980CC03610BE07F72947F9A8203"
+    },
+    {
+      "file": "mcu_72_01_37_02.bin",
+      "length": 98304,
+      "sha256": "AEE6A8C3840513286B406DE432D6538B3DB930A3E68EDC43338CDB49DDEA6A30"
+    },
+    {
+      "file": "mcu_72_01_43_02.bin",
+      "length": 98304,
+      "sha256": "D253E7637576670DFA6E07BD888DC92CF3DD1D68B9977FD72B009E07532B96E0"
+    },
+    {
+      "file": "mcu_72_01_52_02.bin",
+      "length": 98304,
+      "sha256": "0F020AA55BD9B32B1ACE22E46B3A43FF00FFCB16DBB794927F3208F0F603622C"
+    },
+    {
+      "file": "mcu_72_01_53_02.bin",
+      "length": 98304,
+      "sha256": "053F4766D4B03DB37A44A84F605ACA346C93596A68A918A50B68A9543B33801B"
+    },
+    {
+      "file": "mcu_72_01_53_03.bin",
+      "length": 98304,
+      "sha256": "93A32064BC0470A88C0669DA23BFA3EDDB5946AA37D712D186CF2AD7B849FA83"
+    },
+    {
+      "file": "mcu_72_01_58_02.bin",
+      "length": 98304,
+      "sha256": "B6B4BB7C928CE65E1D03E1DCD6FC6BF764B65C226FF6A5C0B337E6F2430AA1A5"
+    },
+    {
+      "file": "mcu_72_01_58_03.bin",
+      "length": 98304,
+      "sha256": "FE5D34B522916B072189D8D0B823E85E8BEAFBE02CC6BACC66559C12CA89FAA0"
+    },
+    {
+      "file": "mcu_82_01_34_00.bin",
+      "length": 98304,
+      "sha256": "E9C02C51FD416A00753FF8DD241ABC94EB0DB3F263EA2280E251A6FE7A752375"
+    },
+    {
+      "file": "mcu_92_01_24.bin",
+      "length": 98304,
+      "sha256": "8E34F7AAB60F8874AEA7FD839D1EEC777A88E19FB42A7FC3E9350A42E4714F0E"
+    },
+    {
+      "file": "mcu_92_01_28_01.bin",
+      "length": 98304,
+      "sha256": "2C84863EF18A795CA46B6D0ACE5398A4BD5888B82AA470BE6908AD50F86519B6"
+    },
+    {
+      "file": "mcu_92_01_35_00.bin",
+      "length": 98304,
+      "sha256": "48D06C299BF9734A020E205395C3DEA6620235C5AD5CFFFCE5573AE4C6662FDA"
+    },
+    {
+      "file": "mcu_92_01_35_01.bin",
+      "length": 98304,
+      "sha256": "77C72FF9C328682D979DB4673B66C7EE1A5F8F5546164DA86FB6E9DDB7F58F4A"
+    },
+    {
+      "file": "mcu_92_01_35_11.bin",
+      "length": 98304,
+      "sha256": "CEC0BC8F95A4D134097DC2C67C9DE050865789A4B4976746AD717C009D10A73A"
+    },
+    {
+      "file": "mcu_92_01_40_11.bin",
+      "length": 98304,
+      "sha256": "076054B07CA3A2123FC98DADA746CC1C77BC22B77FB65C2D833678C09A2C2034"
+    },
+    {
+      "file": "mcu_92_01_41_11.bin",
+      "length": 98304,
+      "sha256": "61D9F64BD7972B72392BFD50A3049297E861D65D58A96ED9D00F04807AAE72CD"
+    },
+    {
+      "file": "mcu_92_01_49_11.bin",
+      "length": 98304,
+      "sha256": "A9D58925EF5CEF6A9E62D1292B70427B70B47F044138CE5DF3238FCFB349D73C"
+    },
+    {
+      "file": "mcu_92_01_59_11.bin",
+      "length": 98304,
+      "sha256": "63E5F85D4DEAE98BA8656D0A9AEC07FC85AD5A535087BCBB074EE7FE6EE083DA"
+    },
+    {
+      "file": "ola_mcu_80_pin_file.bin",
+      "length": 98304,
+      "sha256": "2C84863EF18A795CA46B6D0ACE5398A4BD5888B82AA470BE6908AD50F86519B6"
+    },
+    {
+      "file": "seg_mcu_100_pin_file.bin",
+      "length": 98304,
+      "sha256": "D216A85D5CBEFEC31D9198D6390FAE1A200997C04D1B524D50F5D2CF987FCB42"
+    },
+    {
+      "file": "seg_mcu_80_pin_file.bin",
+      "length": 98304,
+      "sha256": "4A402EFA7EAFCB798C49C7A5AD9F6882ACB94B4F77BAA5BFA425399182AD396D"
+    }
+  ]
+}
