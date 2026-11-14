@@ -1,5 +1,27 @@
 # Android preview APK
 
+## Current Super build: 0.5.19-super
+
+`OpenOLA-0.5.19-super-arm64-v8a.apk` is the optimized, arm64-only Super
+release build for Android 8.0+ (API 26+). It uses application ID
+`in.crossfire.s1diag.super`, version code 4059, version name `0.5.19-super`,
+and is 31,045,747 bytes. SHA-256:
+`E1E5F971FED75B84D44417C9F684500D7E7BFA64D6C9F177AF79913E689610AC`.
+
+This package includes the existing Gen1 replacement identity section,
+including the VIN-change action. The build enables that code path with the
+explicit `OPENOLA_IDENTITY_WRITES=true` define; the runtime still requires a
+fresh repair snapshot, Service mode, Park, charger unplugged, typed
+`CONFIRM`, and the existing readback/error handling. No VIN or vehicle data is
+embedded in the APK.
+
+Build command:
+`flutter build apk --release --flavor super --target-platform android-arm64 --split-per-abi --dart-define=OPENOLA_IDENTITY_WRITES=true`
+
+It uses the project debug signing configuration because no production
+keystore is stored in this workspace. No physical scooter-side validation of
+this exact Super build is recorded.
+
 ## Current Public build: 0.5.19
 
 `OpenOLA-0.5.19-public-arm64-v8a.apk` is the current Public release build. It
